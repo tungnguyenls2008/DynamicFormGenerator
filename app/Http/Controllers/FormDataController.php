@@ -108,7 +108,16 @@ class FormDataController extends Controller
                     $html .= '<div class="form-group">';
                     $html .= '<image src='.env('APP_URL').$data['file'].' style="width:400px" id="'.$item->field_name.'" name="'.$item->field_name.'" readonly';
                     $html .= '</div>';
-
+                }
+                else if($item->field_sub_type== 'document'){
+                    $html .= '<div class="form-group">';
+                    $html .= '<a href='.env('APP_URL').$data['file'].' id="'.$item->field_name.'">Tải về</a>';
+                    $html .= '</div>';
+                }
+                else if($item->field_sub_type== 'video'){
+                    $html .= '<div class="form-group">';
+                    $html .= '<video id="'.$item->field_name.'" width="320" height="240" controls><source src='.env('APP_URL').$data['file'].' style="width:400px"></video>';
+                    $html .= '</div>';
                 }
 //                $html .= '<div class="form-group">';
 //                $html .= '<input type="'.$item->field_name.'" id="'.$item->field_name.'" name="'.$item->field_name.'" class="form-check-input ml-1"  readonly';

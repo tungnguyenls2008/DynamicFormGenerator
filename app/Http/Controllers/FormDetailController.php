@@ -6,6 +6,7 @@ use App\Models\Form;
 use App\Models\FormDetail;
 use App\Models\FieldValue;
 use App\Models\FormData;
+use Illuminate\Foundation\Http\Middleware\ValidatePostSize;
 use Illuminate\Http\Request;
 use Verot\Upload\Upload;
 
@@ -58,11 +59,14 @@ class FormDetailController extends Controller
         }
 
         else {
+
             $handle = new Upload($data['files'][0]);
             $handle->process('uploads/test');
+
+            rename($handle->file_dst_pathname,'uploads/test/'.$handle->file_dst_name_body.'.mp4');
             date_default_timezone_set('Asia/Ho_Chi_Minh');
             $dt=date("Y-m-d H:i:s");
-            $data = serialize(['file'=>$handle->file_dst_pathname]);
+            $data = serialize(['file'=>'uploads/test/'.$handle->file_dst_name_body.'.mp4']);
             $formData = new FormData;
             $formData->form_id = $id;
             $formData->name = $dt;
@@ -73,14 +77,10 @@ class FormDetailController extends Controller
         return redirect('form');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function show($id)
     {
+
         $form = Form::where('id', $id)->first();
         $formDetail = FormDetail::where('form_id', $id)->get();
         $html = '<form enctype="multipart/form-data" action="'.route('showform.store').'" method="POST"> '. csrf_field() ;
@@ -117,13 +117,6 @@ class FormDetailController extends Controller
                 $html .= '<label class="form-check-label ml-4" for="'.$item->field_name.'">'.$item->field_label.'</label></div>';
             }
             else if ($item->field_type == "file"){
-                if ($item->sub_field_type=='image'){
-                    $html .= '<div class="form-group">';
-                    $html .= '<image src="" id="'.$item->field_name.'" name="files[]" class="form-check-input ml-1">';
-                    $html .= '<label class="form-check-label ml-4" for="'.$item->field_name.'">'.$item->field_label.'</label></div>';
-
-                }
-
                 $html .= '<div class="form-group">';
                 $html .= '<input type="'.$item->field_type.'" id="'.$item->field_name.'" name="files[]" class="form-check-input ml-1">';
                 $html .= '<label class="form-check-label ml-4" for="'.$item->field_name.'">'.$item->field_label.'</label></div>';

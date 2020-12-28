@@ -104,9 +104,15 @@ class FormDataController extends Controller
                 $html .= '<label class="form-check-label ml-4" for="'.$item->field_name.'">'.$item->field_label.'</label></div>';
             }
             else if($item->field_type == "file") {
-                $html .= '<div class="form-group">';
-                $html .= '<input type="file" id="'.$item->field_name.'" name="'.$item->field_name.'" class="form-check-input ml-1"  readonly';
-                $html .= '<label class="form-check-label ml-4" for="'.$item->field_name.'">'.$item->field_label.'</label></div>';
+                if ($item->field_sub_type== 'image'){
+                    $html .= '<div class="form-group">';
+                    $html .= '<image src='.env('APP_URL').$data['file'].' style="width:400px" id="'.$item->field_name.'" name="'.$item->field_name.'" readonly';
+                    $html .= '</div>';
+
+                }
+//                $html .= '<div class="form-group">';
+//                $html .= '<input type="'.$item->field_name.'" id="'.$item->field_name.'" name="'.$item->field_name.'" class="form-check-input ml-1"  readonly';
+//                $html .= '<label class="form-check-label ml-4" for="'.$item->field_name.'">'.$item->field_label.'</label></div>';
 
 
             }

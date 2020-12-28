@@ -19,6 +19,7 @@ class CreateFormDetailsTable extends Migration
             $table->string('field_name');
             $table->string('field_type');
             $table->string('field_sub_type')->nullable();
+            $table->string('file_path')->nullable();
             $table->string('field_label')->nullable();
             $table->string('field_availability')->nullable();
             $table->timestamps();

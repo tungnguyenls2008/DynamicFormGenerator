@@ -7,6 +7,7 @@ use App\Models\FormDetail;
 use App\Models\FieldValue;
 use App\Models\FormData;
 use Illuminate\Http\Request;
+use Verot\Upload\Upload;
 
 class FormDetailController extends Controller
 {
@@ -44,18 +45,30 @@ class FormDetailController extends Controller
     {
         $data = $request->all();
         $id = $data['form_id'];
-
         unset($data['_token'],$data['form_id']);
-        $data = serialize($data);
+        if (!isset($data['files'])){
+            $data = serialize($data);
+            date_default_timezone_set('Asia/Ho_Chi_Minh');
+            $dt=date("Y-m-d H:i:s");
+            $formData = new FormData;
+            $formData->form_id = $id;
+            $formData->name = $dt;
+            $formData->data = $data;
+            $formData->save();
+        }
 
-        date_default_timezone_set('Asia/Ho_Chi_Minh');
-        $dt=date("Y-m-d H:i:s");
-
-        $formData = new FormData;
-        $formData->form_id = $id;
-        $formData->name = $dt;
-        $formData->data = $data;
-        $formData->save();
+        else {
+            $handle = new Upload($data['files'][0]);
+            $handle->process('uploads/test');
+            date_default_timezone_set('Asia/Ho_Chi_Minh');
+            $dt=date("Y-m-d H:i:s");
+            $data = serialize(['file'=>$handle->file_dst_pathname]);
+            $formData = new FormData;
+            $formData->form_id = $id;
+            $formData->name = $dt;
+            $formData->data = $data;
+            $formData->save();
+        }
 
         return redirect('form');
     }
@@ -70,7 +83,7 @@ class FormDetailController extends Controller
     {
         $form = Form::where('id', $id)->first();
         $formDetail = FormDetail::where('form_id', $id)->get();
-        $html = '<form action="'.route('showform.store').'" method="POST"> '. csrf_field() ;
+        $html = '<form enctype="multipart/form-data" action="'.route('showform.store').'" method="POST"> '. csrf_field() ;
         $html .= '<input type="hidden" name="form_id" value="'.$id.'">';
         foreach($formDetail as $item){
             if($item->field_type == "textarea"){
@@ -104,16 +117,24 @@ class FormDetailController extends Controller
                 $html .= '<label class="form-check-label ml-4" for="'.$item->field_name.'">'.$item->field_label.'</label></div>';
             }
             else if ($item->field_type == "file"){
+                if ($item->sub_field_type=='image'){
+                    $html .= '<div class="form-group">';
+                    $html .= '<image src="" id="'.$item->field_name.'" name="files[]" class="form-check-input ml-1">';
+                    $html .= '<label class="form-check-label ml-4" for="'.$item->field_name.'">'.$item->field_label.'</label></div>';
+
+                }
+
                 $html .= '<div class="form-group">';
-                $html .= '<input type="file" id="'.$item->field_name.'" name="'.$item->field_name.'" class="form-check-input ml-1">';
+                $html .= '<input type="'.$item->field_type.'" id="'.$item->field_name.'" name="files[]" class="form-check-input ml-1">';
                 $html .= '<label class="form-check-label ml-4" for="'.$item->field_name.'">'.$item->field_label.'</label></div>';
+
             }
             else {
                 $html .= '<div class="form-group"><label for="'.$item->field_name.'">'.$item->field_label.'</label>';
                 $html .= '<input type="'.$item->field_type.'" name="'.$item->field_name.'" id="'.$item->field_name.'" class="form-control"></div>';
             }
         }
-        $html .= '<div class="row"><button class="btn btn-primary offset-1 col-3">Submit</button></div>';
+        $html .= '<div class="row"><button class="btn btn-primary offset-1 col-3">Xác nhận & Lưu dữ liệu</button></div>';
         $html .= '</form>';
 
         return view('formDetails.show',compact('form', 'html'));

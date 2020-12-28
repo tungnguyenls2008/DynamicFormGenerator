@@ -6,6 +6,7 @@ use App\Models\Form;
 use App\Models\FormDetail;
 use App\Models\FieldValue;
 use Illuminate\Http\Request;
+use Verot\Upload\Upload;
 
 
 class FormController extends Controller
@@ -55,6 +56,7 @@ class FormController extends Controller
             $FormDetail->field_name = $field_name[$x];
             $FormDetail->field_type = $field_type[$x];
             $FormDetail->field_sub_type=null;
+            $FormDetail->file_path=null;
             $FormDetail->field_availability=1;
             if($field_label[$x] == ""){
                 $FormDetail->field_label = $field_name[$x];

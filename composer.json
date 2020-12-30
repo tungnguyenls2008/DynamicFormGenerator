@@ -10,6 +10,7 @@
     "require": {
         "php": "^7.3.0|^8.0",
         "fideloper/proxy": "^4.4",
+        "jazmy/jaz-form-builder": "dev-master",
         "laravel/framework": "^8.0",
         "laravel/tinker": "^2.5",
         "proengsoft/laravel-jsvalidation": "^4.0",

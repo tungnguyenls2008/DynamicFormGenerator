@@ -20,7 +20,7 @@ class CreateFormDataTable extends Migration
             $table->string('data');
             $table->timestamps();
 
-            $table->foreign('form_id')->references('id')->on('forms');
+            $table->foreign('form_id')->references('id')->on('forms_origin');
         });
     }
 

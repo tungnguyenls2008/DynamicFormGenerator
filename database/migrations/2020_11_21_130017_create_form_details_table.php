@@ -23,7 +23,7 @@ class CreateFormDetailsTable extends Migration
             $table->string('field_label')->nullable();
             $table->string('field_availability')->nullable();
             $table->timestamps();
-            $table->foreign('form_id')->references('id')->on('forms');
+            $table->foreign('form_id')->references('id')->on('forms_origin');
         });
     }
 

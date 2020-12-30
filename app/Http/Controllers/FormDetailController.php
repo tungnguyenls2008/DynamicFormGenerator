@@ -8,10 +8,13 @@ use App\Models\FieldValue;
 use App\Models\FormData;
 use Illuminate\Foundation\Http\Middleware\ValidatePostSize;
 use Illuminate\Http\Request;
+use jazmy\FormBuilder\Traits\HasFormBuilderTraits;
 use Verot\Upload\Upload;
 
 class FormDetailController extends Controller
 {
+    use HasFormBuilderTraits;
+
     /**
      * Display a listing of the resource.
      *
@@ -165,5 +168,9 @@ class FormDetailController extends Controller
     public function destroy(FormDetail $formDetail)
     {
         //
+    }
+    public function saveJsonFromFormBuilder(Request $request){
+        return $request->json_form;
+
     }
 }
